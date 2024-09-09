@@ -1,0 +1,18 @@
+{
+  "name": "jodijunction",
+  "version": "1.0.0",
+  "description": "Jodi Junction is a comprehensive online matrimony platform designed to connect individuals seeking life partners. The website offers a user-friendly interface with features to create detailed profiles, search for potential matches based on various criteria, and facilitate secure communication between users.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0",
+    "nodemon": "^3.1.4"
+  }
+}
