@@ -1,10 +1,12 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
-import path from 'path'; //module for managing paths to resources
-import { fileURLToPath } from 'url'; //converts urls to paths
+import path from 'path'; // Module for managing paths to resources
+import { fileURLToPath } from 'url'; // Converts URLs to paths
+import bcrypt from 'bcrypt'; // For password hashing
+import session from 'express-session'; // For managing user sessions
 
-const __filename = fileURLToPath(import.meta.url); //get current filename
-const __dirname = path.dirname(__filename); //get current wd
+const __filename = fileURLToPath(import.meta.url); // Get current filename
+const __dirname = path.dirname(__filename); // Get current working directory
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,86 +26,129 @@ async function connectDB() {
   }
 }
 
-connectDB(); //connect to MongoDB
-app.use(express.json()); //use metadata from express package json
+connectDB(); // Connect to MongoDB
+app.use(express.json()); // For handling JSON requests
+app.use(express.urlencoded({ extended: true })); // For parsing form data
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.set('view engine', 'ejs'); //set EJS as a view engine for rendering templates 
-app.set('views', path.join(__dirname, '../views')); //set the views directory to ../views
+app.set('view engine', 'ejs'); // Set EJS as the view engine for rendering templates
+app.set('views', path.join(__dirname, '../views')); // Set the views directory
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Configure session management
+app.use(session({
+  secret: 'yourSecretKey', // Use a strong secret in production
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 } // Session expires in 1 hour
+}));
 
+// Render login page
 app.get('/', (req, res) => {
-  res.render('login'); //render login.ejs
+  res.render('login');
 });
 
+// Render registration page
+app.get('/join', (req, res) => {
+  res.render('joinNow');
+});
+
+// User login route
+app.post('/login', async (req, res) => {
+  const { loginEmail, loginPassword } = req.body;
+
+  try {
+    const user = await users.findOne({ email: loginEmail });
+    if (!user) {
+      return res.status(400).send('User not found.');
+    }
+
+    const isPasswordMatch = await bcrypt.compare(loginPassword, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).send('Incorrect password.');
+    }
+
+    // User authenticated, create session
+    req.session.userId = user._id;
+    res.redirect('/dashboard');
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).send('Server error.');
+  }
+});
+
+// User registration route
+app.post('/join', async (req, res) => {
+  const { joinEmail, mobile, joinPassword, joinConfirmPassword, purpose, gender, dob, religion, country } = req.body;
+
+  if (joinPassword !== joinConfirmPassword) {
+    return res.status(400).send('Passwords do not match.');
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(joinPassword, 10);
+
+    const newUser = {
+      email: joinEmail,
+      mobile,
+      password: hashedPassword,
+      purpose,
+      gender,
+      dob,
+      religion,
+      country,
+      createdAt: new Date()
+    };
+
+    await users.insertOne(newUser);
+    res.redirect('/');
+  } catch (err) {
+    console.error('Registration error:', err);
+    res.status(500).send('Server error.');
+  }
+});
+
+// Protected route - dashboard (only accessible when logged in)
+app.get('/dashboard', (req, res) => {
+  if (!req.session.userId) {
+    return res.redirect('/');
+  }
+  res.render('dashboard'); // Render a dashboard view
+});
+
+// User logout
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+});
+
+// Render other pages like 'about', 'privacy', etc.
 app.get('/about', (req, res) => {
-  res.render('about'); //render login.ejs
+  res.render('about');
 });
 
 app.get('/blog', (req, res) => {
-  res.render('blog'); //render login.ejs
+  res.render('blog');
 });
 
 app.get('/tips', (req, res) => {
-  res.render('helpfultips'); //render login.ejs
+  res.render('helpfultips');
 });
 
 app.get('/privacy', (req, res) => {
-  res.render('privacypolicy'); //render login.ejs
+  res.render('privacypolicy');
 });
 
 app.get('/terms', (req, res) => {
-  res.render('termsofuse'); //render login.ejs
-});
-app.get('/shop', (req, res) => {
-  res.render('shop'); 
+  res.render('termsofuse');
 });
 
-app.get('/shop', (req,res) => {
+app.get('/shop', (req, res) => {
   res.render('shop');
 });
 
-
-app.post('/join', async (req, res) => {
-  const { loginEmail, loginPassword } = req.body;
-  if (!loginEmail || !loginPassword) {
-    return res.status(400).send('Email and password are required.');
-  }
-  try {
-    const existingUser = await users.findOne({ email: loginEmail, password: loginPassword });
-    if (existingUser) {
-      return res.status(200).send('Login successful!');
-    } else {
-      return res.status(401).send('Invalid email or password.');
-    }
-  } catch (err) {
-    console.error('Error during login:', err);
-    return res.status(500).send('Internal server error.');
-  }
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-
-app.post('/login', async (req, res) => {
-  const { loginEmail, loginPassword } = req.body;
-  if (!loginEmail || !loginPassword) {
-    return res.status(400).send('Email and password are required.');
-  }
-  try {
-    const existingUser = await users.findOne({ email: loginEmail, password: loginPassword });
-    if (existingUser) {
-      return res.status(200).send('Login successful!');
-    } else {
-      return res.status(401).send('Invalid email or password.');
-    }
-  } catch (err) {
-    console.error('Error during login:', err);
-    return res.status(500).send('Internal server error.');
-  }
-});
-
-
