@@ -57,4 +57,7 @@ app.get('/privacy', (req, res) => {
 app.get('/terms', (req, res) => {
   res.render('termsofuse'); //render login.ejs
 });
+app.get('/shop', (req, res) => {
+  res.render('shop'); 
+});
 
