@@ -85,8 +85,7 @@
             </div>
 
             <!-- Join Now Modal -->
-            <div class="modal fade" id="joinNowModal" tabindex="-1" aria-labelledby="joinNowModalLabel"
-              aria-hidden="true">
+            <div class="modal fade" id="joinNowModal" tabindex="-1" aria-labelledby="joinNowModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -97,20 +96,20 @@
                     <form action="/join" method="POST">
                       <div class="mb-3">
                         <label for="purpose" class="form-label">I am making this website for</label>
-                        <select class="form-select" id="purpose" required>
+                        <select class="form-select" id="purpose" name="purpose" required>
                           <option value="myself">Myself</option>
-                          <option value="myself">Son</option>
-                          <option value="myself">Daughter</option>
+                          <option value="son">Son</option>
+                          <option value="daughter">Daughter</option>
                           <option value="friend">Friend</option>
                           <option value="brother">Brother</option>
                           <option value="sister">Sister</option>
-                          <option value="sister">Relative</option>
+                          <option value="relative">Relative</option>
                           <option value="other">Other</option>
                         </select>
                       </div>
                       <div class="mb-3">
                         <label for="gender" class="form-label">Gender</label>
-                        <select class="form-select" id="gender" required>
+                        <select class="form-select" id="gender" name="gender" required>
                           <option value="male">Male</option>
                           <option value="female">Female</option>
                           <option value="other">Other</option>
@@ -118,11 +117,11 @@
                       </div>
                       <div class="mb-3">
                         <label for="dob" class="form-label">Date of Birth</label>
-                        <input type="date" class="form-control" id="dob" required>
+                        <input type="date" class="form-control" id="dob" name="dob" required>
                       </div>
                       <div class="mb-3">
                         <label for="religion" class="form-label">Religion</label>
-                        <select id="religion" class="form-control" required>
+                        <select id="religion" class="form-control" name="religion" required>
                           <option value="" disabled selected>Select your religion</option>
                           <option value="Hindu">Hindu</option>
                           <option value="Muslim">Muslim</option>
@@ -135,7 +134,7 @@
                       </div>
                       <div class="mb-3">
                         <label for="country" class="form-label">Living in</label>
-                        <select class="form-select" id="country" required>
+                        <select class="form-select" id="country" name="country" required>
                           <option value="India">India</option>
                           <option value="United States">United States</option>
                           <option value="Canada">Canada</option>
@@ -146,26 +145,26 @@
                       </div>
                       <div class="mb-3">
                         <label for="joinEmail" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="joinEmail" placeholder="name@example.com" required>
+                        <input type="email" class="form-control" id="joinEmail" name="joinEmail" placeholder="name@example.com" required>
                       </div>
                       <div class="mb-3">
                         <label for="mobile" class="form-label">Mobile Number</label>
-                        <input type="tel" class="form-control" id="mobile" placeholder="Enter mobile number" required>
+                        <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Enter mobile number" required>
                       </div>
                       <div class="mb-3">
                         <label for="joinPassword" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="joinPassword" placeholder="Password" required>
+                        <input type="password" class="form-control" id="joinPassword" name="joinPassword" placeholder="Password" required>
                       </div>
                       <div class="mb-3">
                         <label for="joinConfirmPassword" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="joinConfirmPassword"
-                          placeholder="Confirm Password" required>
+                        <input type="password" class="form-control" id="joinConfirmPassword" name="joinConfirmPassword" placeholder="Confirm Password" required>
                       </div>
                       <button type="submit" class="btn btn-warning">Join Now</button>
                     </form>
                   </div>
                 </div>
               </div>
+            </div>            
             </div>
           </div>
       </header>
@@ -206,9 +205,22 @@
           </div>
         </div>
       </a>
+
+
+
+
+      <!-- Shop Collections Section -->
+<div class="container mt-5"><br><br>
+  <p class="text-justify" style="color: white;">
+  At our shop, we offer an extensive range of products to suit every occasion. Whether you're planning a grand celebration or a cozy get-together, we have everything you need to make your event special. Our collection includes vibrant balloons in various colors and designs, perfect for adding a festive touch to any party. For those looking for traditional attire, explore our beautiful range of kurtas and sarees, designed to bring elegance and grace to weddings, festivals, and cultural events. We also offer a wide selection of fresh and fragrant flowers, ideal for decorations or as thoughtful gifts to brighten someone's day. In addition to these, we have a variety of other essentials to ensure your event is perfectly planned and executed. From decorations to attire and everything in between, our shop is your one-stop destination for all your celebration needs.
+  </p>
+</div>
+
+<h2 class="text-center mb-4 yellow-text">Start Planning My Event Now!</h2>
+
       <form>
-        <div class="row mb-3">
-          <div class="col-sm-6"><br><br><br><br>
+        <div class="row mb-3" style="color: white;">
+          <div class="col-sm-6" ><br><br><br><br>
             <label for="lookingFor" class="form-label">I'm looking to celebrate</label>
             <select class="form-select" id="lookingFor">
               <option value="marriage">A Marriage</option>
@@ -225,31 +237,9 @@
     </div>
     
     <div class="row mb-3">
-        <div class="col-sm-6">
-            <label for="religion" class="form-label">of religion</label>
-            <select class="form-select" id="religion">
-                <option value="hindu">Hindu</option>
-                <option value="muslim">Muslim</option>
-                <option value="christian">Christian</option>
-                <option value="sikh">Sikh</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
+        
     
-        <div class="col-sm-6">
-            <label for="city" class="form-label">at</label>
-            <select class="form-select" id="city">
-                <option value="delhi">Delhi</option>
-                <option value="mumbai">Mumbai</option>
-                <option value="bangalore">Bangalore</option>
-                <option value="chennai">Chennai</option>
-                <option value="kolkata">Kolkata</option>
-                <option value="hyderabad">Hyderabad</option>
-                <option value="ahmedabad">Ahmedabad</option>
-                <option value="pune">Pune</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
+        
     </div>
     
 
