@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
   <head>
-    <title>JodiJunction | Login</title>
+    <title>UtsavUniverse | Login</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
@@ -54,8 +54,8 @@
               >
                 <svg
                   class="bi me-2"
-                  width="40"
-                  height="32"
+                  width="110"
+                  height="70"
                   role="img"
                   aria-label="Bootstrap"
                 >
@@ -101,7 +101,7 @@
                         <button type="submit" class="btn btn-primary ">Login</button>
                         &nbsp;OR&nbsp;
                         <button type="button" class="btn btn-secondary " id="otpButton" name="otpButton">Login with OTP</button><br><br>
-                        New to Jodi Junction? <a href="">Sign Up For Free ></a>
+                        New to Utsav Universe? <a href="">Sign Up For Free ></a>
 
 
                       </form>
@@ -209,61 +209,94 @@
 
 
   <div class="container mt-5">
-    <h2 class="text-center mb-4">India's Premier Matchmaking Service</h2>
-    <h4 class="text-center mb-4">Search by City, Profession & Religion</h4>
+    <h2 class="text-center mb-4">India's Premier Celebration Partner</h2>
+    <h4 class="text-center mb-4">Search by Celebration, City, and Need at Utsav Universe<br></h4>
+    <h2 class="text-center mb-4" style="color: yellow;">Our Collections<br><br><br><br></h2>
+
+
+
+    <a href="/shop" style="text-decoration:none;">
+      <div class="gallery-container text-center">
+        <div class="gallery">
+
+            <span style="--i:1">
+                <img src="../img/pic8.jpg" alt="" />
+            </span>
+            <span style="--i:2">
+                <img src="../img/pic7.jpg" alt="" />
+            </span>
+            <span style="--i:3">
+                <img src="../img/pic6.jpg" alt="" />
+            </span>
+            <span style="--i:4">
+                <img src="../img/pic5.jpg" alt="" />
+            </span>
+            <span style="--i:5">
+                <img src="../img/pic4.jpg" alt="" />
+            </span>
+            <span style="--i:6">
+                <img src="../img/pic3.jpg" alt="" />
+            </span>
+            <span style="--i:7">
+                <img src="../img/pic2.jpg" alt="" />
+            </span>
+            <span style="--i:8">
+                <img src="../img/pic1.jpg" alt="" />
+            </span>
+        </div>
+      </div>
+    </a>
+  
 
     <form>
-        <div class="row mb-3">
-            <div class="col-sm-6">
-                <label for="lookingFor" class="form-label">I'm looking for a</label>
-                <select class="form-select" id="lookingFor">
-                    <option value="boy">Boy</option>
-                    <option value="girl">Girl</option>
-                </select>
-            </div>
 
-            <div class="col-sm-6">
-                <label for="ageBetween" class="form-label">aged</label>
-                <div class="input-group">
-                    <input type="number" class="form-control" id="ageFrom" placeholder="From" min="18">
-                    <span class="input-group-text">to</span>
-                    <input type="number" class="form-control" id="ageTo" placeholder="To" min="18">
-                </div>
+      <div class="row mb-3">
+        <div class="col-sm-6"><br><br><br><br>
+            <label for="lookingFor" class="form-label">I'm looking to celebrate</label>
+            <select class="form-select" id="lookingFor">
+                <option value="marriage">A Marriage</option>
+                <option value="birthday">A Birthday</option>
+            </select>
+        </div>
+    
+        <div class="col-sm-6"><br><br><br><br>
+            <label for="celebrationDate" class="form-label">on</label>
+            <div class="input-group">
+                <input type="date" class="form-control" id="celebrationDate" required>
             </div>
         </div>
-
-        <div class="row mb-3">
-            <div class="col-sm-6">
-                <label for="religion" class="form-label">of religion</label>
-                <select class="form-select" id="religion">
-                    <option value="hindu">Hindu</option>
-                    <option value="muslim">Muslim</option>
-                    <option value="christian">Christian</option>
-                    <option value="sikh">Sikh</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-
-            <div class="col-sm-6">
-                <label for="motherTongue" class="form-label">and mother tongue</label>
-                <select class="form-select" id="motherTongue">
-                    <option value="hindi">Hindi</option>
-                    <option value="bengali">Bengali</option>
-                    <option value="telugu">Telugu</option>
-                    <option value="marathi">Marathi</option>
-                    <option value="tamil">Tamil</option>
-                    <option value="urdu">Urdu</option>
-                    <option value="gujarati">Gujarati</option>
-                    <option value="malayalam">Malayalam</option>
-                    <option value="kannada">Kannada</option>
-                    <option value="odia">Odia</option>
-                    <option value="punjabi">Punjabi</option>
-                    <option value="assamese">Assamese</option>
-                    <option value="maithili">Maithili</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
+    </div>
+    
+    <div class="row mb-3">
+        <div class="col-sm-6">
+            <label for="religion" class="form-label">of religion</label>
+            <select class="form-select" id="religion">
+                <option value="hindu">Hindu</option>
+                <option value="muslim">Muslim</option>
+                <option value="christian">Christian</option>
+                <option value="sikh">Sikh</option>
+                <option value="other">Other</option>
+            </select>
         </div>
+    
+        <div class="col-sm-6">
+            <label for="city" class="form-label">at</label>
+            <select class="form-select" id="city">
+                <option value="delhi">Delhi</option>
+                <option value="mumbai">Mumbai</option>
+                <option value="bangalore">Bangalore</option>
+                <option value="chennai">Chennai</option>
+                <option value="kolkata">Kolkata</option>
+                <option value="hyderabad">Hyderabad</option>
+                <option value="ahmedabad">Ahmedabad</option>
+                <option value="pune">Pune</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+    </div>
+    
+
+        
 
         <div class="text-center">
             <button type="submit" class="btn btn-primary">Let's Begin</button>
@@ -287,7 +320,7 @@
     </div>
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="../img/date4.jpg" class="d-block w-100" alt="...">
+        <img src="../img/date3.jpg" class="d-block w-100" alt="...">
         <div class="carousel-caption d-none d-md-block">
           <h5>Dating 101</h5>
           <p>Be transparent about your core values and long-term goals to cultivate a truly meaningful and aligned connection.</p>
@@ -301,7 +334,7 @@
         </div>
       </div>
       <div class="carousel-item">
-        <img src="../img/date3.jpg" class="d-block w-100" alt="...">
+        <img src="../img/date1.jpg" class="d-block w-100" alt="...">
         <div class="carousel-caption d-none d-md-block">
           <h5>Dating 103</h5>
           <p>Allow relationships to evolve at their own pace, giving them the time needed to develop naturally without rushing.</p>
@@ -321,15 +354,10 @@
 <!--CAROUSEL END-->
 <br>
   <div class="container">
-    <h2 class="highlight"><center>JODIJUNCTION.COM BEST ONLINE
+    <h2 class="highlight"><center>UTSAVUNIVERSE.COM BEST ONLINE
       MATRIMONY SITE</h2></center><br>
     <p>
-      For over 20 years, Jodi Junction has been crafting successful matches for
-      family and friends, and now our global platform is here to help you find a
-      meaningful connection. Combining traditional matchmaking with modern
-      technology, we’re dedicated to guiding you in your search for a lifelong
-      partner. Join millions who trust us for their matchmaking needs and embark
-      on your journey to finding the perfect match with confidence and support.
+      For all your special occasions in India, Utsav Universe is your one-stop platform. Whether you're planning a marriage, birthday, or any celebration, we offer a comprehensive range of services, from booking marriage halls to sourcing ritual items. With a deep understanding of Indian traditions, we make organizing your events seamless and stress-free. Trust Utsav Universe to take care of every detail, so you can focus on enjoying your special day.
     </p>
   </div>
   <hr />
@@ -338,14 +366,11 @@
     <div class="row">
       <!-- About Section -->
       <div class="col-lg-4 col-md-6 mb-4">
-        <h5 class="text-uppercase">JodiJunction</h5>
+        <h5 class="text-uppercase">UtsavUniverse</h5>
 
         <p>
-          <b> JodiJunction®</b> is a registered platform in India dedicated to
-          helping singles worldwide find their life partner. We ensure secure
-          matchmaking through manual profile and phone verifications. Join us
-          today to start your journey towards a fulfilling relationship.
-        </p>
+
+          <b>UtsavUniverse®</b> is a registered platform in India designed to simplify your special occasions. From weddings to birthdays, we connect you with verified vendors for marriage halls and ritual items. Join us to enjoy seamless event planning and make your celebrations memorable!        </p>
       </div>
 
       <!-- Quick Links -->
@@ -359,7 +384,7 @@
           </li>
           <li>
             <a href="#!" class="text-white text-decoration-none"
-              >JodiJunction® 101</a
+              >UtsavUniverse® 101</a
             >
           </li>
           <li>
@@ -421,12 +446,12 @@
           <li><a href="/blog" class="text-white text-decoration-none">Blog</a></li>
           <li>
             <a href="#!" class="text-white text-decoration-none"
-              >Helpful Tips</a
+              >Shop</a
             >
           </li>
           <li>
             <a href="#!" class="text-white text-decoration-none"
-              >Submit Story</a
+              >Submit Experince</a
             >
           </li>
         </ul>
@@ -457,7 +482,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="contactModalLabel">JodiJunction Contacts</h5>
+        <h5 class="modal-title" id="contactModalLabel">UtsavUniverse Contacts</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -465,7 +490,7 @@
         
         <div class="mb-3">
           <label for="email" class="form-label">Email Address</label>
-          <p id="email">contact@jodijunction.com</p>
+          <p id="email">contact@utsavuniverse.com</p>
         </div>
 
         <div class="mb-3">
@@ -478,7 +503,7 @@
 
         <div class="mb-3">
           <label for="address" class="form-label">Address</label>
-          <p id="address">123 Jodi Junction Lane, Suite 456, Cityville, ST 78901</p>
+          <p id="address">123 UtsavUniverse456, Cityville, ST 78901</p>
         </div>
 
         <a href="tel:+1234567890" class="btn btn-primary">Call Now</a>
@@ -540,7 +565,7 @@
   </div>
 
   <div class="text-center p-3 bg-dark border-top border-light">
-    &copy; 2024 JodiJunction. All rights reserved. JodiJunction® is a registered
+    &copy; 2024 UtsavUniverse. All rights reserved. UtsavUniverse® is a registered
     trademark and should not be used without permission.
   </div>
 </footer>
