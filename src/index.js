@@ -39,25 +39,71 @@ app.listen(PORT, () => {
 
 app.get('/', (req, res) => {
   res.render('login'); //render login.ejs
-  users.insert_one({})
 });
 
 app.get('/about', (req, res) => {
   res.render('about'); //render login.ejs
 });
+
 app.get('/blog', (req, res) => {
   res.render('blog'); //render login.ejs
 });
+
 app.get('/tips', (req, res) => {
   res.render('helpfultips'); //render login.ejs
 });
+
 app.get('/privacy', (req, res) => {
   res.render('privacypolicy'); //render login.ejs
 });
+
 app.get('/terms', (req, res) => {
   res.render('termsofuse'); //render login.ejs
 });
 app.get('/shop', (req, res) => {
   res.render('shop'); 
 });
+
+app.get('/shop', (req,res) => {
+  res.render('shop');
+});
+
+
+app.post('/join', async (req, res) => {
+  const { loginEmail, loginPassword } = req.body;
+  if (!loginEmail || !loginPassword) {
+    return res.status(400).send('Email and password are required.');
+  }
+  try {
+    const existingUser = await users.findOne({ email: loginEmail, password: loginPassword });
+    if (existingUser) {
+      return res.status(200).send('Login successful!');
+    } else {
+      return res.status(401).send('Invalid email or password.');
+    }
+  } catch (err) {
+    console.error('Error during login:', err);
+    return res.status(500).send('Internal server error.');
+  }
+});
+
+
+app.post('/login', async (req, res) => {
+  const { loginEmail, loginPassword } = req.body;
+  if (!loginEmail || !loginPassword) {
+    return res.status(400).send('Email and password are required.');
+  }
+  try {
+    const existingUser = await users.findOne({ email: loginEmail, password: loginPassword });
+    if (existingUser) {
+      return res.status(200).send('Login successful!');
+    } else {
+      return res.status(401).send('Invalid email or password.');
+    }
+  } catch (err) {
+    console.error('Error during login:', err);
+    return res.status(500).send('Internal server error.');
+  }
+});
+
 

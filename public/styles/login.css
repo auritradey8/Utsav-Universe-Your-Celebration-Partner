@@ -1,78 +1,90 @@
 .background {
-    background-image: url('../img/bg4.jpg');
-    height: 100vh;
-    width:100vw;
-    background-size: cover;
+  background-image: url('../img/bg4.jpg');
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
 }
-.nav{
-    background-color: rgb(0,0,0);
+
+.nav {
+  background-color: rgb(0, 0, 0);
 }
+
 .highlight {
-    color: yellow;
-}
-p{
-    text-align: justify;
-}
-a{
-    text-decoration: none;
+  color: yellow;
 }
 
+p {
+  text-align: justify;
+}
 
+a {
+  text-decoration: none;
+}
 
+.text-light {
+  color: white;
+}
 
-body{
-    margin:0;
-    height:100vh;
-    display:grid;
-    place-items:center;
-    background-color:#010101;
-  }
-  
-  .gallery{
-    position:relative;
-    width:300px;
-    height:200px;
-    transform-style:preserve-3d;
-    animation:rotate 35s linear infinite;
-  }
-  
-  @keyframes rotate{
-    from{
-      transform:perspective(1200px) rotateY(0deg);
-    }
-    
-    to{
-      transform:perspective(1200px) rotateY(360deg);
-    }
-  }
-  
-  .gallery span{
-    position:absolute;
-    width:100%;
-    height:100%;
-    transform-origin:center;
-    transform-style:preserve-3d;
-    transform:rotateY(calc(var(--i) * 45deg)) translateZ(380px);
-  }
-  
-  .gallery span img{
-    position:absolute;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-  }
-
-  .gallery-container {
-    display: flex;
-    justify-content: center; /* Center the gallery horizontally */
-    align-items: center; /* Center the gallery vertically, if needed */
-    flex-direction: column; /* Stack items vertically */
-    margin: 0 auto; /* Center the container */
-    text-align: center; /* Center the text within the gallery */
+body {
+  margin: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background-color: #010101;
 }
 
 .gallery {
-    display: flex;
-    flex-wrap: wrap; /* Allow the images to wrap */
-    justify-content: center; /* Center the images within the gallery */
+  position: relative;
+  width: 300px;
+  height: 200px;
+  transform-style: preserve-3d;
+  animation: rotate 35s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+
+  to {
+    transform: perspective(1200px) rotateY(360deg);
+  }
+}
+
+.gallery span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+  transform-style: preserve-3d;
+  transform: rotateY(calc(var(--i) * 45deg)) translateZ(380px);
+}
+
+.gallery span img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-container {
+  display: flex;
+  justify-content: center;
+  /* Center the gallery horizontally */
+  align-items: center;
+  /* Center the gallery vertically, if needed */
+  flex-direction: column;
+  /* Stack items vertically */
+  margin: 0 auto;
+  /* Center the container */
+  text-align: center;
+  /* Center the text within the gallery */
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  /* Allow the images to wrap */
+  justify-content: center;
+  /* Center the images within the gallery */
 }
