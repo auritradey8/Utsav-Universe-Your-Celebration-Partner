@@ -1,9 +1,9 @@
+import bcrypt from 'bcrypt'; // For password hashing
 import express from 'express';
+import session from 'express-session'; // For managing user sessions
 import { MongoClient } from 'mongodb';
 import path from 'path'; // Module for managing paths to resources
 import { fileURLToPath } from 'url'; // Converts URLs to paths
-import bcrypt from 'bcrypt'; // For password hashing
-import session from 'express-session'; // For managing user sessions
 
 const __filename = fileURLToPath(import.meta.url); // Get current filename
 const __dirname = path.dirname(__filename); // Get current working directory
@@ -148,7 +148,15 @@ app.get('/shop', (req, res) => {
   res.render('shop');
 });
 
+
+
+app.get('/cart', (req, res) => {
+  res.render('cart'); // Render the cart page (your EJS cart template)
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
