@@ -1,0 +1,92 @@
+              <!-- Join Now Modal -->
+              <div class="modal fade" id="joinNowModal" tabindex="-1" aria-labelledby="joinNowModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="joinNowModalLabel">Join Now</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <!-- On the /join route, POST the data present in the form -->
+                      <!-- Collects all the user input data in the form and assembles an object to POST on /route -->
+                      <form action="/join" method="POST">
+                        <div class="mb-3">
+                          <label for="purpose" class="form-label">I am making this website for</label>
+                          <select class="form-select" id="purpose" name="purpose" required>
+                            <option value="myself">Myself</option>
+                            <option value="son">Son</option>
+                            <option value="daughter">Daughter</option>
+                            <option value="friend">Friend</option>
+                            <option value="brother">Brother</option>
+                            <option value="sister">Sister</option>
+                            <option value="relative">Relative</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="username" class="form-label">Name</label>
+                          <input type="input" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="gender" class="form-label">Gender</label>
+                          <select class="form-select" id="gender" name="gender" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="dob" class="form-label">Date of Birth</label>
+                          <input type="date" class="form-control" id="dob" name="dob" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="religion" class="form-label">Religion</label>
+                          <select id="religion" class="form-control" name="religion" required>
+                            <option value="" disabled selected>Select your religion</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Muslim">Muslim</option>
+                            <option value="Christian">Christian</option>
+                            <option value="Sikh">Sikh</option>
+                            <option value="Buddhist">Buddhist</option>
+                            <option value="Jain">Jain</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="country" class="form-label">Living in</label>
+                          <select class="form-select" id="country" name="country" required>
+                            <option value="India">India</option>
+                            <option value="United States">United States</option>
+                            <option value="Canada">Canada</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="joinEmail" class="form-label">Email address</label>
+                          <input type="email" class="form-control" id="joinEmail" name="joinEmail"
+                            placeholder="name@example.com" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="mobile" class="form-label">Mobile Number</label>
+                          <input type="tel" class="form-control" id="mobile" name="mobile"
+                            placeholder="Enter mobile number" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="joinPassword" class="form-label">Password</label>
+                          <input type="password" class="form-control" id="joinPassword" name="joinPassword"
+                            placeholder="Password" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="joinConfirmPassword" class="form-label">Confirm Password</label>
+                          <input type="password" class="form-control" id="joinConfirmPassword" name="joinConfirmPassword"
+                            placeholder="Confirm Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Join Now</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
