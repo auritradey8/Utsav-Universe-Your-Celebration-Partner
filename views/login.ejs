@@ -42,7 +42,7 @@
               </a>
 
               <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="#" class="icon"><img src="../img/logo1.jpg" width="200" height="80"></a></li>
+                <li><a href="#" class="icon"><img src="../img/logo3.png" width="200" height="80"></a></li>
               </ul>
 
               <div class="text-end">
@@ -164,20 +164,103 @@
           <h5 class="text-uppercase">Need Help?</h5>
           <ul class="list-unstyled">
             <li>
-              <a href="#!" class="text-white text-decoration-none">Invitation Card Ideas</a>
+<!-- Trigger Link -->
+<a href="#!" class="text-white text-decoration-none" data-bs-toggle="modal" data-bs-target="#invitationModal1">
+  Invitation Card Ideas
+</a>
+
+<!-- Modal 1: Select Card Type -->
+<div class="modal fade" id="invitationModal1" aria-hidden="true" aria-labelledby="invitationModal1Label" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title fs-5" id="invitationModal1Label">Choose Invitation Card Type</h1>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <form id="cardTypeForm">
+        <div class="mb-3">
+          <label for="cardType" class="form-label">Card Type</label>
+          <select class="form-select" id="cardType" required>
+            <option value="">Select...</option>
+            <option value="Birthday">Birthday</option>
+            <option value="Marriage">Marriage</option>
+            <option value="Rice Feeding">Rice Feeding Ceremony</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" data-bs-target="#invitationModal2" data-bs-toggle="modal" data-bs-dismiss="modal">
+        Show Designs
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Modal 2: Fullscreen Card Designs -->
+<div class="modal fade" id="invitationModal2" aria-hidden="true" aria-labelledby="invitationModal2Label" tabindex="-1">
+<div class="modal-dialog modal-fullscreen">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title fs-5" id="invitationModal2Label">Card Design Ideas</h1>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div id="designContent">
+        <!-- You can update this dynamically later using JS -->
+        <p class="text-center">Showing design samples for selected type.</p>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div class="col">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Design 1</h5>
+                <iframe src="/template1" width="100%" height="300" frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100">
+              <img src="https://via.placeholder.com/300x200?text=Design+2" class="card-img-top" alt="Design 2">
+              <div class="card-body">
+                <h5 class="card-title">Design 2</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100">
+              <img src="https://via.placeholder.com/300x200?text=Design+3" class="card-img-top" alt="Design 3">
+              <div class="card-body">
+                <h5 class="card-title">Design 3</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-bs-target="#invitationModal1" data-bs-toggle="modal" data-bs-dismiss="modal">
+        Back
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+          </li>
+            <li>
+              <a href="/dashboard" class="text-white text-decoration-none">Decorators</a>
             </li>
             <li>
-              <a href="#!" class="text-white text-decoration-none">Decorators</a>
+              <a href="/dashboard" class="text-white text-decoration-none">Caterers</a>
             </li>
             <li>
-              <a href="#!" class="text-white text-decoration-none">Caterers</a>
-            </li>
-            <li>
-              <a href="#" class="text-white text-decoration-none" data-toggle="modal"
+              <a href="/dashboard" class="text-white text-decoration-none" data-toggle="modal"
                 data-target="#supportModal">Community Hall</a>
             </li>
             <li>
-              <a href="#!" class="text-white text-decoration-none">Priest</a>
+              <a href="/dashboard" class="text-white text-decoration-none">Priest</a>
             </li>
           </ul>
         </div>
@@ -229,10 +312,10 @@
               <a href="/about" class="text-white text-decoration-none">About Us</a>
             </li>
             <li>
-              <a href="#!" class="text-white text-decoration-none">Shop</a>
+              <a href="/shop" class="text-white text-decoration-none">Shop</a>
             </li>
             <li>
-              <a href="#!" class="text-white text-decoration-none">Submit Experince</a>
+              <a href="/submitexp" class="text-white text-decoration-none">Submit Experince</a>
             </li>
           </ul>
         </div>

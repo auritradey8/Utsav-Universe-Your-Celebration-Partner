@@ -103,3 +103,45 @@ body {
   justify-content: center;
   /* Center the images within the gallery */
 }
+
+/* Modal Content Styling */
+#invitationModal1 .modal-content,
+#invitationModal2 .modal-content {
+    background-color: white;
+    color: black;
+}
+
+/* Modal Title */
+#invitationModal1 .modal-title,
+#invitationModal2 .modal-title {
+    color: black;
+}
+
+/* Modal Body & Footer */
+#invitationModal1 .modal-body,
+#invitationModal1 .modal-footer,
+#invitationModal2 .modal-body,
+#invitationModal2 .modal-footer {
+    color: black;
+}
+
+/* Yellow Button with Black Text */
+#invitationModal1 .btn-primary,
+#invitationModal2 .btn-primary {
+    background-color: yellow;
+    border-color: yellow;
+    color: black;
+}
+
+#invitationModal1 .btn-primary:hover,
+#invitationModal2 .btn-primary:hover {
+    background-color: #ffe600;
+    border-color: #ffe600;
+    color: black;
+}
+
+/* Link Trigger Style (if inside modal) */
+#invitationModal1 a,
+#invitationModal2 a {
+    color: black;
+}

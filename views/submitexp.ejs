@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Share Your Experience - Utsav Universe</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/reviews.css" />
+    <style>
+      .rating .star {
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+    </style>
+    
+  </head>
+  <body>
+    <header class="bg-light py-3">
+      <div class="container">
+        <h1 class="text-center">Share Your Experience</h1>
+      </div>
+    </header>
+
+    <section class="share-review py-5 bg-white">
+      <div class="container">
+        <h2 class="text-center mb-4">We'd love to hear from you!</h2>
+        <form method="POST" action="/rate">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="video">Upload Video Message (optional)</label>
+            <input
+              type="file"
+              class="form-control-file"
+              id="video"
+              accept="video/*"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="review">Write Your Review</label>
+            <textarea
+              class="form-control"
+              id="review"
+              name="review"
+              rows="4"
+              placeholder="Share your thoughts about your experience..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Rate Your Experience</label>
+            <div class="rating" id="star-rating">
+              <span class="star" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star" data-value="4">&#9733;</span>
+              <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input type="hidden" name="rating" id="rating-value" value="5" />
+          </div>
+          
+
+          <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="submitted-reviews py-5 bg-light">
+      <div class="container">
+        <h2 class="text-center mb-4">What Our Users Say</h2>
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Anjali Sharma</h5>
+                <p class="card-text">
+                  Utsav Universe made my sister’s wedding so easy to plan! All vendors were super professional.
+                </p>
+                <div class="text-warning">★★★★☆</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Rohan Mehta</h5>
+                <p class="card-text">
+                  Loved the decoration and catering vendors. The customer support team was responsive and helpful.
+                </p>
+                <div class="text-warning">★★★★★</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Sneha Kapoor</h5>
+                <p class="card-text">
+                  Great app for finding venues. I was able to plan my engagement hassle-free. Thanks!
+                </p>
+                <div class="text-warning">★★★★☆</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-dark text-white text-center py-3">
+      <div class="container">
+        <p>&copy; 2024 Utsav Universe. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const stars = document.querySelectorAll('#star-rating .star');
+      const ratingInput = document.getElementById('rating-value');
+    
+      stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+          const rating = star.getAttribute('data-value');
+          ratingInput.value = rating;
+    
+          stars.forEach((s, i) => {
+            s.style.color = i < rating ? 'gold' : '#ccc';
+          });
+        });
+    
+        star.addEventListener('mouseover', () => {
+          const hoverValue = star.getAttribute('data-value');
+          stars.forEach((s, i) => {
+            s.style.color = i < hoverValue ? 'gold' : '#ccc';
+          });
+        });
+    
+        star.addEventListener('mouseout', () => {
+          const currentRating = ratingInput.value;
+          stars.forEach((s, i) => {
+            s.style.color = i < currentRating ? 'gold' : '#ccc';
+          });
+        });
+      });
+    
+      // Set default color on load
+      window.addEventListener('DOMContentLoaded', () => {
+        const defaultRating = ratingInput.value;
+        stars.forEach((s, i) => {
+          s.style.color = i < defaultRating ? 'gold' : '#ccc';
+        });
+      });
+    </script>
+    
+  </body>
+</html>

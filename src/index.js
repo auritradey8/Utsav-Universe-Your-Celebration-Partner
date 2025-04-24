@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 // MongoDB connection URI
 const URI = 'mongodb+srv://Auritra:FkfGvpeURjrpKpQ3@cluster0.xlizi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const CLIENT = new MongoClient(URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const CLIENT = new MongoClient(URI);
 
 // Database & collection references
 let db, users;
@@ -31,12 +31,13 @@ async function connectDB() {
     console.error('Could not connect to MongoDB:', err);
   }
 }
-connectDB();
 
 // Middleware
 app.use(express.json()); // Parse JSON requests
 app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use(express.static(path.join(__dirname, '../public'))); // Serve static files
+app.use('/uploads', express.static('public/uploads'));
+
 
 // View engine setup
 app.set('view engine', 'ejs');
@@ -151,9 +152,137 @@ app.get('/tips', (req, res) => res.render('helpfultips'));
 app.get('/privacy', (req, res) => res.render('privacypolicy'));
 app.get('/terms', (req, res) => res.render('termsofuse'));
 app.get('/shop', (req, res) => res.render('shop'));
-app.get('/cart', (req, res) => res.render('cart')); // Render cart page
+app.get('/cart', (req, res) => res.render('cart')); 
+app.get('/submitexp', (req, res) => res.render('submitexp'));
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.get('/template1', (req, res) => {
+  res.render('template1'); // assuming views/template1.ejs exists
+});
+app.get('/template2', (req, res) => {
+  res.render('template2'); // assuming views/template1.ejs exists
+});
+app.get('/template3', (req, res) => {
+  res.render('template3'); // assuming views/template1.ejs exists
+});
+app.get('/template4', (req, res) => {
+  res.render('template4'); // assuming views/template1.ejs exists
+});
+
+app.get('/admin', async (req, res) => {
+  try {
+    const decorators = await db.collection('Decorators').find().toArray();
+    const halls = await db.collection('Halls').find().toArray();
+    const priests = await db.collection('Priests').find().toArray();
+    const caterers = await db.collection('Caterers').find().toArray();
+
+    res.render('admin', {
+      decorators,
+      halls,
+      priests,
+      caterers
+    });
+  } catch (error) {
+    console.error(error);
+    res.send('Error fetching admin data');
+  }
+});
+
+// Add these POST routes after your existing routes
+
+// Helper function to get collection and ID filter
+function getCollectionAndFilter(db, type, body) {
+  const collections = {
+    decorators: 'Decorators',
+    halls: 'Halls',
+    priests: 'Priests',
+    caterers: 'Caterers'
+  };
+
+  const filter = { name: body.name }; // assuming name is unique
+  return { collection: db.collection(collections[type]), filter };
+}
+
+// === ADMIN POST ROUTES ===
+app.post('/admin/decorators', async (req, res) => {
+  const { action, name, avg_pricing, location, mob, services_involved, mail, avg_rating } = req.body;
+  const { collection, filter } = getCollectionAndFilter(db, 'decorators', req.body);
+
+  try {
+    const data = {
+      name,
+      avg_pricing: Number(avg_pricing),
+      location,
+      mob,
+      services_involved: services_involved?.split(',') ?? [],
+      mail,
+      avg_rating: Number(avg_rating)
+    };
+
+    if (action === 'add') await collection.insertOne(data);
+    else if (action === 'update') await collection.updateOne(filter, { $set: data });
+    else if (action === 'delete') await collection.deleteOne(filter);
+
+    res.redirect('/admin');
+  } catch (error) {
+    console.error('Error handling decorators:', error);
+    res.status(500).send('Error handling decorators');
+  }
+});
+
+// Generic handler for Halls, Priests, Caterers
+['halls', 'priests', 'caterers'].forEach(type => {
+  app.post(`/admin/${type}`, async (req, res) => {
+    const { action, name, location, mobno, pricing, avg_rating } = req.body;
+    const { collection, filter } = getCollectionAndFilter(db, type, req.body);
+
+    try {
+      const data = {
+        name,
+        location,
+        mobno,
+        pricing: Number(pricing),
+        avg_rating: Number(avg_rating)
+      };
+
+      if (action === 'add') await collection.insertOne(data);
+      else if (action === 'update') await collection.updateOne(filter, { $set: data });
+      else if (action === 'delete') await collection.deleteOne(filter);
+
+      res.redirect('/admin');
+    } catch (error) {
+      console.error(`Error handling ${type}:`, error);
+      res.status(500).send(`Error handling ${type}`);
+    }
+  });
+});
+
+
+app.post('/rate', async (req, res) => {
+  try {
+    const { name, review, rating } = req.body;
+
+
+    const newRating = {
+      name,
+      review,
+      rating,
+      date: new Date()
+    };
+
+    await db.collection('Ratings').insertOne(newRating);
+    res.status(200).send("Sent rating to db");
+    // res.redirect('/rate'); // or a thank-you page
+  } catch (err) {
+    console.error('Error saving rating:', err);
+    res.status(500).send('Something went wrong. Please try again.');
+  }
+});
+
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to connect to MongoDB. Server not started.', err);
 });

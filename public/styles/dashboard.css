@@ -1,81 +1,66 @@
-/* General body styling */
 body {
-    background-color: #cfccf3;
-    font-family: 'Poppins', sans-serif;
+    background-color: white;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Hero Section Styling */
 .hero-section {
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f9fa;
+    background-color: #ff6f61;
+    color: white;
     text-align: center;
+    padding: 30px 15px; /* reduced from 60px 20px */
 }
 
 .hero-content h1 {
-    font-size: 3rem;
+    font-size: 2rem; /* slightly reduced for balance */
     font-weight: bold;
+    margin-bottom: 8px;
 }
 
 .hero-content p {
-    font-size: 1.25rem;
-    color: #555;
-}
-/* Album container */
-.album {
-    padding: 50px 0;
+    font-size: 1rem;
+    margin: 0; /* optional: removes default spacing below the paragraph */
 }
 
-/* Card styling */
+/* Section Headings */
+.section-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
+    color: #ff6f61;
+    margin: 50px 0 20px 0;
+}
+
+/* Card Layout (Album) */
 .card {
-    border: none;
-    border-radius: 12px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #ff6f61;
+    transition: transform 0.2s ease;
+    border-radius: 10px;
 }
 
 .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
 }
 
-/* Image inside card */
-.card img {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    object-fit: cover;
-    height: 200px;
+.card-img-top {
+    border-bottom: 1px solid #ff6f61;
 }
 
-/* Card title */
-.card-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #343a40;
+.card-body {
+    background-color: white;
+    color: #333;
+    text-align: center;
 }
 
-/* Card text */
-.card-text {
-    font-size: 0.95rem;
-    color: #6c757d;
+/* Background for album section */
+.album {
+    background-color: #fff;
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 
-/* Buttons */
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 20px;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-/* Responsive grid */
-@media (max-width: 768px) {
-    .card {
-        margin-bottom: 20px;
-    }
+/* Spacing between sections */
+.section {
+    margin-bottom: 60px;
 }
