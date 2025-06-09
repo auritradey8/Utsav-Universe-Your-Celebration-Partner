@@ -1,26 +1,23 @@
-import bcrypt from 'bcrypt'; // For password hashing
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 import express from 'express';
-import session from 'express-session'; // For managing user sessions
+import session from 'express-session';
 import { MongoClient } from 'mongodb';
-import path from 'path'; // Module for managing paths to resources
-import { fileURLToPath } from 'url'; // Converts URLs to paths
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Get current filename & directory
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// MongoDB connection URI
-const URI = 'mongodb+srv://Auritra:FkfGvpeURjrpKpQ3@cluster0.xlizi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const CLIENT = new MongoClient(URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// Database & collection references
+// MongoDB setup
+const URI = process.env.MONGODB_URI;
+const CLIENT = new MongoClient(URI);
 let db, users;
 
-// Connect to MongoDB
 async function connectDB() {
   try {
     await CLIENT.connect();
@@ -31,59 +28,58 @@ async function connectDB() {
     console.error('Could not connect to MongoDB:', err);
   }
 }
-connectDB();
 
 // Middleware
-app.use(express.json()); // Parse JSON requests
-app.use(express.urlencoded({ extended: true })); // Parse form data
-app.use(express.static(path.join(__dirname, '../public'))); // Serve static files
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '../public')));
+app.use('/uploads', express.static('public/uploads'));
 
-// View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
-// Session management
 app.use(
   session({
-    secret: 'yourSecretKey', // Change this to a strong secret in production
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 3600000 }, // Session expires in 1 hour
+    cookie: {
+      maxAge: 3600000,
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false, // change to true if using HTTPS
+    },
   })
 );
 
 // ===== ROUTES =====
 
-// Render login page
-app.get('/', (req, res) => {
-  res.render('login');
-});
+// Auth Pages
+app.get('/', (req, res) => res.render('login'));
 
-// User registration (Sign Up)
+// Sign Up
 app.post('/join', async (req, res) => {
   try {
-    const { purpose, username, gender, dob, religion, country, joinEmail, mobile, joinPassword, joinConfirmPassword } = req.body;
+    const {
+      purpose, username, gender, dob, religion, country,
+      joinEmail, mobile, joinPassword, joinConfirmPassword
+    } = req.body;
 
-    // Validate required fields
-    if (!purpose || !username || !gender || !dob || !religion || !country || !joinEmail || !mobile || !joinPassword || !joinConfirmPassword) {
+    if ([purpose, username, gender, dob, religion, country, joinEmail, mobile, joinPassword, joinConfirmPassword].some(f => !f)) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // Check if passwords match
     if (joinPassword !== joinConfirmPassword) {
       return res.status(400).json({ error: 'Passwords do not match' });
     }
 
-    // Check if email is already registered
     const existingUser = await users.findOne({ email: joinEmail });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(joinPassword, 10);
 
-    // Insert user into database
     await users.insertOne({
       purpose,
       username,
@@ -104,23 +100,17 @@ app.post('/join', async (req, res) => {
   }
 });
 
-// User login
+// Login
 app.post('/login', async (req, res) => {
   const { loginEmail, loginPassword } = req.body;
 
   try {
     const user = await users.findOne({ email: loginEmail });
-    if (!user) {
-      return res.status(400).send('User not found.');
-    }
+    if (!user) return res.status(400).send('User not found.');
 
-    // Verify password
-    const isPasswordMatch = await bcrypt.compare(loginPassword, user.password);
-    if (!isPasswordMatch) {
-      return res.status(401).send('Incorrect password.');
-    }
+    const isMatch = await bcrypt.compare(loginPassword, user.password);
+    if (!isMatch) return res.status(401).send('Incorrect password.');
 
-    // User authenticated, create session
     req.session.userId = user._id;
     res.redirect('/dashboard');
   } catch (error) {
@@ -129,31 +119,158 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Protected route - Dashboard
+// Dashboard
 app.get('/dashboard', (req, res) => {
-  if (!req.session.userId) {
-    console.log("no session")
-    return res.redirect('/');
-  }
-  res.render("dashboard")
+  if (!req.session.userId) return res.redirect('/');
+  res.render("dashboard");
 });
 
-// User logout
+// Logout
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
 
-// Render additional pages
-app.get('/about', (req, res) => res.render('about'));
-app.get('/blog', (req, res) => res.render('blog'));
-app.get('/tips', (req, res) => res.render('helpfultips'));
-app.get('/privacy', (req, res) => res.render('privacypolicy'));
-app.get('/terms', (req, res) => res.render('termsofuse'));
-app.get('/shop', (req, res) => res.render('shop'));
-app.get('/cart', (req, res) => res.render('cart')); // Render cart page
+// Pages
+['about', 'blog', 'helpfultips', 'privacypolicy', 'termsofuse', 'shop', 'cart', 'submitexp',
+  'template1', 'template2', 'template3', 'template4'].forEach(page => {
+  app.get(`/${page}`, (req, res) => res.render(page));
+});
+
+// Admin Panel
+app.get('/admin', async (req, res) => {
+  try {
+    const decorators = await db.collection('Decorators').find().toArray();
+    const halls = await db.collection('Halls').find().toArray();
+    const priests = await db.collection('Priests').find().toArray();
+    const caterers = await db.collection('Caterers').find().toArray();
+
+    res.render('admin', { decorators, halls, priests, caterers });
+  } catch (error) {
+    console.error(error);
+    res.send('Error fetching admin data');
+  }
+});
+
+// Cart
+app.get('/cart', async (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
+
+  try {
+    const user = await User.findById(req.session.userId);
+    const items = user?.cart || [];
+
+    res.render('cart', { items });
+  } catch (err) {
+    console.error('Error loading cart:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+
+
+// Add to Cart
+app.post('/add-to-cart', async (req, res) => {
+  const { itemId, itemType } = req.body;
+  if (!req.session.userId) return res.redirect('/');
+
+  try {
+    const item = await db.collection(itemType).findOne({ name: itemId });
+    if (!item) return res.status(404).send('Item not found');
+
+    await db.collection('Cart').updateOne(
+      { userId: req.session.userId },
+      { $push: { items: { itemId: item._id, itemType, name: item.name, pricing: item.avg_pricing || item.pricing || 0 } } },
+      { upsert: true }
+    );
+
+    res.redirect('/cart');
+  } catch (err) {
+    console.error('Error adding to cart:', err);
+    res.status(500).send('Error adding item to cart');
+  }
+});
+
+// Ratings
+app.post('/rate', async (req, res) => {
+  try {
+    const { name, review, rating } = req.body;
+    await db.collection('Ratings').insertOne({
+      name, review, rating: Number(rating), date: new Date()
+    });
+    res.status(200).send("Rating submitted");
+  } catch (err) {
+    console.error('Error saving rating:', err);
+    res.status(500).send('Something went wrong.');
+  }
+});
+
+// Admin post routes
+function getCollectionAndFilter(db, type, body) {
+  const collections = {
+    decorators: 'Decorators',
+    halls: 'Halls',
+    priests: 'Priests',
+    caterers: 'Caterers'
+  };
+  return {
+    collection: db.collection(collections[type]),
+    filter: { name: body.name }
+  };
+}
+
+app.post('/admin/decorators', async (req, res) => {
+  const { action, name, avg_pricing, location, mob, services_involved, mail, avg_rating } = req.body;
+  const { collection, filter } = getCollectionAndFilter(db, 'decorators', req.body);
+
+  try {
+    const data = {
+      name, avg_pricing: Number(avg_pricing), location, mob,
+      services_involved: services_involved?.split(',') || [],
+      mail, avg_rating: Number(avg_rating)
+    };
+
+    if (action === 'add') await collection.insertOne(data);
+    else if (action === 'update') await collection.updateOne(filter, { $set: data });
+    else if (action === 'delete') await collection.deleteOne(filter);
+
+    res.redirect('/admin');
+  } catch (error) {
+    console.error('Error handling decorators:', error);
+    res.status(500).send('Error handling decorators');
+  }
+});
+
+['halls', 'priests', 'caterers'].forEach(type => {
+  app.post(`/admin/${type}`, async (req, res) => {
+    const { action, name, location, mobno, pricing, avg_rating } = req.body;
+    const { collection, filter } = getCollectionAndFilter(db, type, req.body);
+
+    try {
+      const data = {
+        name, location, mobno,
+        pricing: Number(pricing),
+        avg_rating: Number(avg_rating)
+      };
+
+      if (action === 'add') await collection.insertOne(data);
+      else if (action === 'update') await collection.updateOne(filter, { $set: data });
+      else if (action === 'delete') await collection.deleteOne(filter);
+
+      res.redirect('/admin');
+    } catch (error) {
+      console.error(`Error handling ${type}:`, error);
+      res.status(500).send(`Error handling ${type}`);
+    }
+  });
+});
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to connect to MongoDB. Server not started.', err);
 });
