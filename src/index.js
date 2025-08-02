@@ -6,6 +6,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +19,6 @@ const client = new MongoClient(URI);
 
 let db, users;
 
-// ========== Connect to MongoDB ==========
 async function connectDB() {
   try {
     await client.connect();
@@ -31,7 +31,6 @@ async function connectDB() {
   }
 }
 
-// ========== Middleware ==========
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
@@ -48,7 +47,7 @@ app.use(session({
     maxAge: 3600000,
     httpOnly: true,
     sameSite: 'lax',
-    secure: false, // true if using HTTPS
+    secure: false,
   },
 }));
 
@@ -57,14 +56,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// ========== Routes ==========
-
-// Home/Login Page
 app.get('/', (req, res) => res.render('login'));
 
 // ---------------- AUTH ----------------
 
-// Join / Register
 app.post('/join', async (req, res) => {
   const {
     purpose, username, gender, dob, religion, country,
@@ -95,14 +90,13 @@ app.post('/join', async (req, res) => {
   res.status(201).json({ message: 'User registered successfully!' });
 });
 
-// Login
 app.post('/login', async (req, res) => {
   const { loginEmail, loginPassword } = req.body;
 
   try {
     const user = await users.findOne({ email: loginEmail });
     if (!user) return res.status(400).send('User not found.');
-    
+
     const isMatch = await bcrypt.compare(loginPassword, user.password);
     if (!isMatch) return res.status(401).send('Incorrect password.');
 
@@ -114,13 +108,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Logout
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
 
-// Dashboard
 app.get('/dashboard', (req, res) => {
   if (!req.session.userId) return res.redirect('/');
   res.render("dashboard");
@@ -128,14 +120,13 @@ app.get('/dashboard', (req, res) => {
 
 // ---------------- SHOP ----------------
 
-// Shop page
 app.get('/shop', async (req, res) => {
   if (!req.session.userId) return res.redirect('/login');
 
   try {
     const products = await db.collection('Shop').find().toArray();
     const cartDoc = await db.collection('Cart').findOne({ userId: req.session.userId });
-    const cartCount = cartDoc?.items?.length || 0;
+    const cartCount = cartDoc?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
 
     res.render('shop', { products, cartCount });
   } catch (err) {
@@ -144,50 +135,137 @@ app.get('/shop', async (req, res) => {
   }
 });
 
-
-// Add to Cart
 app.post('/add-to-cart', async (req, res) => {
-  const { itemId, itemType } = req.body;
-
-  if (!req.session.userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  if (!itemId || !itemType) {
-    console.error('Missing itemId or itemType:', req.body);
-    return res.status(400).json({ message: 'Invalid item data' });
-  }
+  const { itemId, itemType, quantity } = req.body;
+  const userId = req.session.userId; // Change to actual user ID handling
+  const qty = Math.min(parseInt(quantity) || 1, 10);
 
   try {
     const item = await db.collection(itemType).findOne({ _id: new ObjectId(itemId) });
-    if (!item) return res.status(404).json({ message: 'Item not found' });
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
 
+    const cartCollection = db.collection('Cart');
+    const userCart = await cartCollection.findOne({ userId });
+
+    if (userCart) {
+      const existingItemIndex = userCart.items.findIndex(
+        (i) => i.itemId.toString() === itemId && i.itemType === itemType
+      );
+
+      if (existingItemIndex !== -1) {
+        // Update quantity of existing item
+        const currentQty = userCart.items[existingItemIndex].quantity;
+        const newQty = Math.min(currentQty + qty, 10);
+        userCart.items[existingItemIndex].quantity = newQty;
+      } else {
+        // Add new item
+        userCart.items.push({
+          itemId: new ObjectId(itemId),
+          itemType,
+          name: item.name,
+          pricing: item.price,
+          quantity: qty,
+        });
+      }
+
+      await cartCollection.updateOne(
+        { _id: userCart._id },
+        { $set: { items: userCart.items } }
+      );
+    } else {
+      // Create new cart
+      await cartCollection.insertOne({
+        userId,
+        items: [{
+          itemId: new ObjectId(itemId),
+          itemType,
+          name: item.name,
+          pricing: item.price,
+          quantity: qty
+        }]
+      });
+    }
+
+    // Count total items in cart (summed quantities)
+    const updatedCart = await cartCollection.findOne({ userId });
+    const cartCount = updatedCart.items.reduce((sum, i) => sum + i.quantity, 0);
+
+    res.json({ cartCount });
+  } catch (err) {
+    console.error("Error adding to cart:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post('/api/remove-from-cart', async (req, res) => {
+  const userId = req.session.userId;
+  const { itemId, itemType } = req.body;
+
+  if (!userId) return res.status(401).json({ message: 'Not logged in' });
+
+  try {
     await db.collection('Cart').updateOne(
-      { userId: req.session.userId },
+      { userId },
       {
-        $push: {
+        $pull: {
           items: {
-            itemId: item._id,
-            itemType,
-            name: item.name,
-            pricing: item.price || item.pricing || 0
+            itemId: new ObjectId(itemId),
+            itemType
           }
         }
-      },
-      { upsert: true }
+      }
     );
 
-    const cart = await db.collection('Cart').findOne({ userId: req.session.userId });
-    const cartCount = cart?.items?.length || 0;
+    const updatedCart = await db.collection('Cart').findOne({ userId });
+    const cartCount = updatedCart?.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
 
-    res.status(200).json({ message: 'Item added to cart', cartCount });
+    res.json({ message: 'Item removed', cartCount });
   } catch (err) {
-    console.error('Error adding to cart:', err);
+    console.error('Error removing item from cart:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// View Cart
+
+app.post('/update-cart', async (req, res) => {
+  const userId = req.session.userId;
+  const { itemId, itemType, quantity } = req.body;
+
+  if (!userId) return res.status(401).json({ message: 'Not logged in' });
+
+  const cartCollection = db.collection('Cart');
+  const cart = await cartCollection.findOne({ userId });
+
+  if (!cart) return res.status(400).json({ message: 'Cart not found' });
+
+  const itemIndex = cart.items.findIndex(item =>
+    item.itemId.toString() === itemId && item.itemType === itemType
+  );
+
+  if (itemIndex > -1) {
+    cart.items[itemIndex].quantity = Number(quantity);
+  } else {
+    cart.items.push({
+      itemId: new ObjectId(itemId),
+      itemType,
+      quantity: Number(quantity)
+    });
+  }
+
+  await cartCollection.updateOne(
+    { _id: cart._id },
+    { $set: { items: cart.items } }
+  );
+
+  const totalCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
+  res.json({ message: 'Cart updated', cartCount: totalCount });
+});
+
+
+
 app.get('/cart', async (req, res) => {
   if (!req.session.userId) return res.redirect('/login');
 
@@ -195,8 +273,7 @@ app.get('/cart', async (req, res) => {
     const cartDoc = await db.collection('Cart').findOne({ userId: req.session.userId });
     const items = cartDoc?.items || [];
 
-    // Calculate total price
-    const total = items.reduce((sum, item) => sum + (item.pricing || 0), 0);
+    const total = items.reduce((sum, item) => sum + (item.pricing || 0) * (item.quantity || 1), 0);
 
     res.render('cart', { items, total });
   } catch (err) {
@@ -205,7 +282,6 @@ app.get('/cart', async (req, res) => {
   }
 });
 
-// Remove from Cart
 app.post('/remove-from-cart', async (req, res) => {
   const { itemId, itemType } = req.body;
   if (!req.session.userId) return res.redirect('/');
@@ -230,6 +306,7 @@ app.post('/remove-from-cart', async (req, res) => {
 });
 
 // ---------------- RATING ----------------
+
 app.post('/rate', async (req, res) => {
   const { name, review, rating } = req.body;
 
@@ -259,7 +336,6 @@ function getCollectionAndFilter(db, type, body) {
   };
 }
 
-// Admin GET
 app.get('/admin', async (req, res) => {
   try {
     const decorators = await db.collection('Decorators').find().toArray();
@@ -273,7 +349,6 @@ app.get('/admin', async (req, res) => {
   }
 });
 
-// Admin POST
 app.post('/admin/decorators', async (req, res) => {
   const { action, name, avg_pricing, location, mob, services_involved, mail, avg_rating } = req.body;
   const { collection, filter } = getCollectionAndFilter(db, 'decorators', req.body);
@@ -300,7 +375,6 @@ app.post('/admin/decorators', async (req, res) => {
   }
 });
 
-// Admin: halls, priests, caterers
 ['halls', 'priests', 'caterers'].forEach(type => {
   app.post(`/admin/${type}`, async (req, res) => {
     const { action, name, location, mobno, pricing, avg_rating } = req.body;
@@ -327,7 +401,6 @@ app.post('/admin/decorators', async (req, res) => {
   });
 });
 
-// ---------------- STATIC VIEWS ----------------
 [
   'about', 'blog', 'helpfultips', 'privacypolicy', 'termsofuse', 'submitexp',
   'template1', 'template2', 'template3', 'template4'
@@ -335,7 +408,6 @@ app.post('/admin/decorators', async (req, res) => {
   app.get(`/${page}`, (req, res) => res.render(page));
 });
 
-// ========== Start Server ==========
 connectDB()
   .then(() => app.listen(PORT, () => console.log(`Server running on port ${PORT}`)))
   .catch(err => console.error('Startup error:', err));
