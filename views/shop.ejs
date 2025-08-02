@@ -25,70 +25,67 @@
 
   <body>
     <nav class="navbar navbar-expand-lg" style="background-color: #ff9a8b">
-  <div class="container-fluid justify-content-between">
-    <div></div> <!-- Empty div to push content center -->
+      <div class="container-fluid justify-content-between">
+        <div></div>
+        <!-- Empty div to push content center -->
 
-    <!-- Centered Title -->
-    <div class="mx-auto">
-      <h1 class="text-center text-white m-0">Our Collection</h1>
-    </div>
+        <!-- Centered Title -->
+        <div class="mx-auto">
+          <h1 class="text-center text-white m-0">Our Collection</h1>
+        </div>
 
-    <!-- Cart Icon Button -->
-    <div class="d-flex">
-      <button
-        onclick="window.location.href='/cart';"
-        type="button"
-        class="btn btn-warning"
-      >
-        <i class="bi bi-cart"></i>
-      </button>
-    </div>
-  </div>
-</nav>
+        <!-- Cart Icon Button -->
+        <div class="d-flex">
+          <button
+            onclick="window.location.href='/cart';"
+            type="button"
+            class="btn btn-warning"
+          >
+            <i class="bi bi-cart"></i>
+            <span
+              id="cart-count"
+              class="badge rounded-pill bg-danger"
+            >
+              <%= typeof cartCount !== 'undefined' ? cartCount : 0 %>
+            </span>
+          </button>
+        </div>
+      </div>
+    </nav>
 
-
-    <!-- Shopping Section -->
     <div class="container mt-4">
       <div class="row">
-        <!-- Product Items -->
-        <% const products = [
-          { name: "Imitation Wedding Ring", price: 4000, original: 4999, discount: "20%", image: "s1.jpg" },
-          { name: "Bridal MakeUp Kit", price: 1999, original: 2499, discount: "20%", image: "s2.jpg" },
-          { name: "Wedding Cake", price: 1499, original: 1875, discount: "20%", image: "s3.jpg" },
-          { name: "Decoration Flowers", price: 1750, original: 2187, discount: "20%", image: "s4.jpg" },
-          { name: "Birthday Balloons", price: 400, original: 499, discount: "20%", image: "s5.jpg" },
-          { name: "Soft Teddy", price: 325, original: 499, discount: "35%", image: "s6.jpg" },
-          { name: "Car Decoration", price: 4000, original: 4999, discount: "20%", image: "s7.jpg" },
-          { name: "Mehendi", price: 400, original: 499, discount: "20%", image: "s8.jpg" }
-        ]; %>
-
         <% products.forEach(product => { %>
-          <div class="col-md-3 mb-4">
-            <div class="card h-100">
-              <img
-                src="../img/<%= product.image %>"
-                class="card-img-top"
-                alt="<%= product.name %>"
-              />
-              <div class="card-body">
-                <h5 class="card-title"><%= product.name %></h5>
-                <div class="product-rating"><span>⭐⭐⭐⭐☆</span> (7)</div>
-                <p class="card-text">
-                  <strong>₹<%= product.price %></strong>
-                  <span style="text-decoration: line-through">₹<%= product.original %></span>
-                  <span class="text-success" style="font-size: 0.8em">
-                    <b><%= product.discount %> off</b>
-                  </span>
-                </p>
-                <form action="/add-to-cart" method="POST">
-                  <input type="hidden" name="itemId" value="<%= product.name %>">
-                  <input type="hidden" name="itemType" value="shop">
-                  <button id="addToCartBtn" type="submit" class="btn btn-warning">Add to Cart</button>
-                </form>
-              </div>
+        <div class="col-md-3 mb-4">
+          <div class="card h-100">
+            <img
+              src="/img/<%= product.image %>"
+              class="card-img-top"
+              alt="<%= product.name %>"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= product.name %></h5>
+              <div class="product-rating"><span>⭐⭐⭐⭐☆</span> (7)</div>
+              <p class="card-text">
+                <strong>₹<%= product.price %></strong>
+                <span style="text-decoration: line-through"
+                  >₹<%= product.original %></span
+                >
+                <span class="text-success" style="font-size: 0.8em">
+                  <b><%= product.discount %> off</b>
+                </span>
+              </p>
+              <form class="add-to-cart-form" method="POST">
+                <input type="hidden" name="itemId" value="<%= product._id %>" />
+                <input type="hidden" name="itemType" value="Shop" />
+                <button type="submit" class="btn btn-warning">
+                  Add to Cart
+                </button>
+              </form>
             </div>
           </div>
-        <% }); %>
+        </div>
+        <% }) %>
       </div>
     </div>
 
@@ -100,24 +97,55 @@
     ></script>
 
     <script>
-  const btn = document.getElementById('addToCartBtn');
-  if(btn) {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();  // prevent default submit if inside form
-      btn.disabled = true;
-      btn.textContent = 'Added ✓';
-      btn.classList.remove('btn-warning');
-      btn.classList.add('btn-success');
+      const btn = document.getElementById("addToCartBtn");
+      if (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault(); // prevent default submit if inside form
+          btn.disabled = true;
+          btn.textContent = "Added ✓";
+          btn.classList.remove("btn-warning");
+          btn.classList.add("btn-success");
 
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = 'Add to Cart';
-        btn.classList.remove('btn-success');
-        btn.classList.add('btn-warning');
-      }, 2000);
-    });
-  }
-</script>
+          setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = "Add to Cart";
+            btn.classList.remove("btn-success");
+            btn.classList.add("btn-warning");
+          }, 2000);
+        });
+      }
 
+      document.querySelectorAll(".add-to-cart-form").forEach((form) => {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const btn = form.querySelector("button");
+          const itemId = form.querySelector("input[name='itemId']").value;
+          const itemType = form.querySelector("input[name='itemType']").value;
+
+          const res = await fetch("/add-to-cart", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ itemId, itemType }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            btn.disabled = true;
+            btn.classList.remove("btn-warning");
+            btn.classList.add("btn-success");
+            btn.textContent = "Added";
+
+            const countEl = document.getElementById("cart-count");
+            if (countEl) countEl.textContent = data.cartCount;
+          } else {
+            alert(data.message || "Error adding to cart");
+          }
+        });
+      });
+    </script>
   </body>
 </html>

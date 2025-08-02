@@ -46,19 +46,22 @@
               </ul>
 
               <div class="text-end">
-                <!-- Login Button -->
-                <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal"
-                  data-bs-target="#loginModal">
-                  Login
-                </button>
-                <!-- Join Now Button -->
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#joinNowModal">
-                  Join Now
-                </button>
+                <% if (!userId) { %>
+                  <!-- Login Button -->
+                  <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    Login
+                  </button>
+                  <!-- Join Now Button -->
+                  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#joinNowModal">
+                    Join Now
+                  </button>
+                  <%- include('login-form') %>
+                  <%- include('join-form') %>
+                <% } else { %>
+                  <!-- Logout Button -->
+                  <a href="/logout" class="btn btn-danger">Logout</a>
+                <% } %>
               </div>
-
-              <%- include('login-form') %>
-              <%- include('join-form') %>
               
             </div>
           </div>
